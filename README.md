@@ -1,7 +1,7 @@
 # API-REST
 
 [![NPM](https://img.shields.io/npm/v/npm?color=green&style=for-the-badge)](https://www.npmjs.com/)
-[![LPHolanda](https://img.shields.io/npm/v/npm?color=blue&label=LPHolanda&style=for-the-badge)](https://github.com/LPHolanda)
+[![LPHolanda](https://img.shields.io/badge/dev-LPHolanda-blue?style=for-the-badge)](https://github.com/LPHolanda)
 
 ## Objetivo
 Projeto realizado para aprendizado e fixação de conhecimento na arquitetura REST utilizando NodeJS.
