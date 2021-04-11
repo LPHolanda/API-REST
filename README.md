@@ -15,3 +15,6 @@ Projeto realizado para aprendizado e fixação de conhecimento na arquitetura RE
 - Cabeçalhos em HTTP.
 - Controlar conteúdo com Content-Type.
 - Trabalhar com JSON e XML.
+- Relacionamento de tabelas com Sequelize.
+- Configuração do CORS.
+- Versionamento de rotas na API.

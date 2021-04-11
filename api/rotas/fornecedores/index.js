@@ -3,10 +3,20 @@ const TabelaFornecedor = require('./TabelaFornecedor');
 const Fornecedor = require('./Fornecedor');
 const { SerializadorFornecedor } = require('../../Serializador');
 
+roteador.options('/', (req, res) => {
+    res.set('Access-Control-Allow-Methods', 'GET, POST');
+    res.set('Access-Control-Allow-Headers', 'Content-Type');
+    res.status(204);
+    res.end();
+});
+
 roteador.get('/', async (req, res) => {
     const resultados = await TabelaFornecedor.listar();
     res.status(200);
-    const serializador = new SerializadorFornecedor(res.getHeader('Content-Type'));
+    const serializador = new SerializadorFornecedor(
+        res.getHeader('Content-Type'),
+        ['empresa']
+    );
     res.send(
         serializador.serializar(resultados)
     );
@@ -18,7 +28,10 @@ roteador.post('/', async (req, res, proximo) => {
         const fornecedor = new Fornecedor(dadosRecebidos);
         await fornecedor.criar();
         res.status(201);
-        const serializador = new SerializadorFornecedor(res.getHeader('Content-Type'));
+        const serializador = new SerializadorFornecedor(
+            res.getHeader('Content-Type'),
+            ['empresa']
+        );
         res.send(
             serializador.serializar(fornecedor)
         );
@@ -28,6 +41,13 @@ roteador.post('/', async (req, res, proximo) => {
     }
 })
 
+roteador.options('/:id', (req, res) => {
+    res.set('Access-Control-Allow-Methods', 'GET, PUT, DELETE');
+    res.set('Access-Control-Allow-Headers', 'Content-Type');
+    res.status(204);
+    res.end();
+});
+
 roteador.get('/:id', async (req, res, proximo) => {
     try {
         const id = req.params.id;
@@ -36,7 +56,7 @@ roteador.get('/:id', async (req, res, proximo) => {
         res.status(200);
         const serializador = new SerializadorFornecedor(
             res.getHeader('Content-Type'),
-            ['email', 'dataCriacao', 'dataAtualizacao', 'versao']
+            ['empresa', 'email', 'dataCriacao', 'dataAtualizacao', 'versao']
         );
         res.send(
             serializador.serializar(fornecedor)
@@ -74,5 +94,22 @@ roteador.delete('/:id', async (req, res, proximo) => {
         proximo(erro);
     }
 })
+
+const roteadorProdutos = require('./produtos');
+
+const verificarFornecedor = async (req, res, proximo) => {
+    try {
+        const id = req.params.idFornecedor;
+        const fornecedor = new Fornecedor({ id: id });
+        await fornecedor.carregar();
+        req.fornecedor = fornecedor;
+        proximo();
+
+    } catch (erro) {
+        proximo(erro);
+    }
+};
+
+roteador.use('/:idFornecedor/produtos', verificarFornecedor, roteadorProdutos);
 
 module.exports = roteador;
